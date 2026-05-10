@@ -1,0 +1,7 @@
+{"timestamp":"2026-05-10T08:00:00Z","trace_id":"checkout-1","service":"api","level":"info","message":"request accepted"}
+{"timestamp":"2026-05-10T08:00:00.180Z","trace_id":"checkout-1","service":"inventory","level":"info","message":"stock reserved"}
+{"timestamp":"2026-05-10T08:00:01.420Z","trace_id":"checkout-1","service":"payments","level":"error","message":"payment retry"}
+{"timestamp":"2026-05-10T08:00:01.850Z","trace_id":"checkout-1","service":"api","level":"info","message":"response sent"}
+{"timestamp":"2026-05-10T08:01:00Z","trace_id":"search-9","service":"api","level":"info","message":"request accepted"}
+{"timestamp":"2026-05-10T08:01:00.090Z","trace_id":"search-9","service":"search","level":"info","message":"results returned"}
+{"timestamp":"2026-05-10T08:01:00.110Z","trace_id":"search-9","service":"api","level":"info","message":"response sent"}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "log-latency-profiler"
+version = "0.1.0"
+description = "Profile request latency from JSONL application logs."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Mert Efekurt" }]
+keywords = ["logs", "jsonl", "latency", "cli", "observability"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: System :: Logging",
+  "Topic :: Utilities"
+]
+
+[project.scripts]
+log-latency-profiler = "log_latency_profiler.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
