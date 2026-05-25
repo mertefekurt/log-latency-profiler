@@ -14,6 +14,7 @@ def profile_events(
     slow_threshold_ms: float | None = 1000.0,
     limit: int = 10,
 ) -> ProfileReport:
+    """Run the profile events workflow."""
     groups: dict[str, list[LogEvent]] = defaultdict(list)
     for event in events:
         groups[event.trace_id].append(event)
