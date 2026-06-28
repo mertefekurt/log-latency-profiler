@@ -63,7 +63,10 @@ def _trace_table(traces: tuple[TraceSummary, ...]) -> str:
     lines = ["  trace             duration   events  errors  services"]
     for trace in traces:
         services = ",".join(trace.services)
-        lines.append(f"  {trace.trace_id[:16]:<16} {trace.duration_ms:>8.1f}ms {trace.event_count:>6} {trace.error_count:>7}  {services}")
+        lines.append(
+            f"  {trace.trace_id[:16]:<16} {trace.duration_ms:>8.1f}ms "
+            f"{trace.event_count:>6} {trace.error_count:>7}  {services}"
+        )
     return "\n".join(lines)
 
 
