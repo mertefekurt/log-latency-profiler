@@ -14,14 +14,24 @@ def profile_events(
     slow_threshold_ms: float | None = 1000.0,
     limit: int = 10,
 ) -> ProfileReport:
-    """Run the profile events workflow."""
+    """Aggregate events into trace-level latency and error summaries."""
     groups: dict[str, list[LogEvent]] = defaultdict(list)
     for event in events:
         groups[event.trace_id].append(event)
 
-    traces = tuple(sorted((_summarize(trace_id, grouped) for trace_id, grouped in groups.items()), key=lambda item: item.duration_ms, reverse=True))
+    traces = tuple(
+        sorted(
+            (_summarize(trace_id, grouped) for trace_id, grouped in groups.items()),
+            key=lambda item: item.duration_ms,
+            reverse=True,
+        )
+    )
     durations = sorted(trace.duration_ms for trace in traces)
-    slow_traces = tuple(trace for trace in traces if slow_threshold_ms is not None and trace.duration_ms >= slow_threshold_ms)[:limit]
+    slow_traces = tuple(
+        trace
+        for trace in traces
+        if slow_threshold_ms is not None and trace.duration_ms >= slow_threshold_ms
+    )[:limit]
 
     return ProfileReport(
         trace_count=len(traces),
@@ -38,6 +48,7 @@ def profile_events(
 
 
 def _summarize(trace_id: str, events: list[LogEvent]) -> TraceSummary:
+    """Create a single trace summary from normalized events."""
     ordered = sorted(events, key=lambda event: event.occurred_at)
     started_at = ordered[0].occurred_at
     ended_at = ordered[-1].occurred_at
@@ -59,6 +70,7 @@ def _summarize(trace_id: str, events: list[LogEvent]) -> TraceSummary:
 
 
 def _percentile(values: list[float], percentile: float) -> float:
+    """Calculate a percentile using linear interpolation between ranks."""
     if not values:
         return 0.0
     if len(values) == 1:

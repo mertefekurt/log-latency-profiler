@@ -9,6 +9,7 @@ from .models import ProfileReport, TraceSummary
 
 
 def render_text(report: ProfileReport) -> str:
+    """Render a compact terminal-friendly profile report."""
     lines = [
         "log latency profile",
         f"traces: {report.trace_count} | events: {report.event_count} | parse errors: {report.parse_error_count}",
@@ -21,6 +22,7 @@ def render_text(report: ProfileReport) -> str:
 
 
 def render_markdown(report: ProfileReport) -> str:
+    """Render a Markdown report suitable for docs and pull requests."""
     rows = "\n".join(_trace_row(trace) for trace in (report.slow_traces or report.traces))
     threshold = "disabled" if report.slow_threshold_ms is None else f"{report.slow_threshold_ms:.0f} ms"
 
@@ -49,10 +51,12 @@ def render_markdown(report: ProfileReport) -> str:
 
 
 def render_json(report: ProfileReport) -> str:
+    """Render a stable JSON representation of the profile report."""
     return json.dumps(asdict(report), default=str, indent=2, sort_keys=True) + "\n"
 
 
 def _trace_table(traces: tuple[TraceSummary, ...]) -> str:
+    """Format trace summaries as an aligned terminal table."""
     if not traces:
         return "  no traces found"
 
@@ -64,10 +68,12 @@ def _trace_table(traces: tuple[TraceSummary, ...]) -> str:
 
 
 def _trace_row(trace: TraceSummary) -> str:
+    """Format one trace summary as a Markdown table row."""
     services = ", ".join(trace.services)
     messages = f"{_clean_cell(trace.first_message)} -> {_clean_cell(trace.last_message)}"
     return f"| `{trace.trace_id}` | {trace.duration_ms:.1f} ms | {trace.event_count} | {services} | {trace.error_count} | {messages} |"
 
 
 def _clean_cell(value: str) -> str:
+    """Escape markdown table separators in dynamic cell content."""
     return value.replace("|", "\\|").strip() or "-"

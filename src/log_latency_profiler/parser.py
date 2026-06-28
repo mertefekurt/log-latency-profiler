@@ -16,6 +16,7 @@ MESSAGE_KEYS = ("message", "msg", "event", "name")
 
 
 def parse_jsonl(lines: Iterable[str], *, service_filter: str | None = None) -> ParseResult:
+    """Parse JSONL log lines into normalized events and recoverable errors."""
     events: list[LogEvent] = []
     errors: list[ParseError] = []
 
@@ -48,6 +49,7 @@ def parse_jsonl(lines: Iterable[str], *, service_filter: str | None = None) -> P
 
 
 def _to_event(item: dict[str, Any], line_number: int) -> LogEvent | ParseError:
+    """Normalize a single JSON object into a log event."""
     timestamp = _first_present(item, TIMESTAMP_KEYS)
     trace_id = _first_present(item, TRACE_KEYS)
 
@@ -76,6 +78,7 @@ def _to_event(item: dict[str, Any], line_number: int) -> LogEvent | ParseError:
 
 
 def _first_present(item: dict[str, Any], keys: tuple[str, ...]) -> Any | None:
+    """Return the first non-empty value from a set of candidate keys."""
     for key in keys:
         value = item.get(key)
         if value not in (None, ""):
@@ -84,6 +87,7 @@ def _first_present(item: dict[str, Any], keys: tuple[str, ...]) -> Any | None:
 
 
 def _parse_timestamp(value: Any) -> datetime | None:
+    """Parse ISO-8601 or unix timestamp values as UTC datetimes."""
     if isinstance(value, (int, float)):
         seconds = float(value) / 1000 if value > 9_999_999_999 else float(value)
         return datetime.fromtimestamp(seconds, tz=timezone.utc)
